@@ -161,12 +161,20 @@ textarea {
     resize: none;
     height: 66px;
     font-weight: 450;
-    font-size: 0.5rem;
+    font-size: 0.95rem;
+    padding: 7px 17px;
+
+}
+
+.error {
+    color: red;
+    text-decoration: underline;
 }
 
 input[type=text] {
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     font-weight: 450;
+    padding: 7px 17px;
 }
 
 input[type=submit] {
@@ -278,4 +286,8 @@ input[type=submit] {
 
 [data-tooltip-location="right"]:hover:after {
     transform: translateY(50%) scaleX(1);
+}
+
+label {
+    font-size: 15px;
 }

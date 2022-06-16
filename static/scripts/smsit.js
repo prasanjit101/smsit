@@ -3,10 +3,11 @@ const SERVER_URL = `${window.location.origin}`;
 const getcode = () => {
     try {
         let code = window.location.search.split("=");
+        if (code[1] == undefined) throw new Error("No code found");
         return code[1];
     } catch (e) {
         //get element by id
-        document.getElementById('error').innerHTML = `<div class="error"><p>Error! Please SignIn with Goto</p></div>`;
+        alert("Error! Please SignIn with GHL again");
         console.log(e);
     }
 }
@@ -61,42 +62,31 @@ const TriggerTask = async (locationId) => {
 //exec part
 let authcode = getcode();
 if (authcode) {
-    //pass authorisation code to backend and get access token, credentials...
-    const obj = {
-        code: authcode,
-        locationId: localStorage.getItem('ghl_location_id')
-    }
-    getcred(SERVER_URL + '/goto-code', obj)
+    getcred(SERVER_URL + '/smsit-code', authcode)
         .then(data => {
-            showSnackbar("GOTO CONNECTED SUCCESSFULLY !");
+            showSnackbar("SMSIT CONNECTED SUCCESSFULLY !");
             document.getElementById('message').innerHTML = `
             <p>[location ID] ${data.locationId}</p>
             <p>[Name] ${data.businessName}</p>`;
             GetForm(data.locationId);
         }).catch(err => {
             console.log(err);
-            document.getElementById('error').innerHTML = `<p>Failed to get credentials. Try login again</p>`;
+            document.getElementById('message').innerHTML = `<div class="error"><p>Failed to get credentials. Try login again</p></div>`;
         });
 }
 
-function showSnackbar(message) {
-    let x = document.getElementById("snackbar");
-    x.innerHTML = message;
-    x.className = "show";
-    setTimeout(function () { x.className = x.className.replace("show", ""); }, 2000);
-}
 
-
-document.getElementById('goto').addEventListener("submit", async function (e) {
+document.getElementById('smsit').addEventListener("submit", async function (e) {
     e.preventDefault();
     let url = `${window.location.origin}/form`;
-    const locationId = localStorage.getItem('ghl_location_id');
     await fetch(url, {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         method: "POST",
         body: new URLSearchParams({
-            number: document.querySelector('input[name="number"]').value.trim().replace(/\s/g, ''),
-            locationId: locationId
+            locationId: document.querySelector('input[name="locationId"]').value,
+            apikey: document.querySelector('input[name="apikey"]').value,
+            inboundNumbers: document.querySelector('input[name="inboundNumbers"]').value.trim().replace(/\s/g, ''),
+            outboundNumber: document.querySelector('input[name="outboundNumber"]').value.trim().replace(/\s/g, ''),
         })
     }).then(
         response => response.json()

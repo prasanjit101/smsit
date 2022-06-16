@@ -1,5 +1,5 @@
 const { UpdateMessageStatus } = require("./ghl/ghlApi");
-const { GotoSend } = require("./goto/gotoApi");
+const { smsitSend } = require("./smsit/smsitApi");
 const { OutboundBlockCache } = require("../services/Cache");
 const DatastoreClient = require("../models/datastore");
 
@@ -25,7 +25,7 @@ const send = async (req) => {
         if (d) {
             process.nextTick(async () => {
                 try {
-                    await GotoSend({
+                    await smsitSend({
                         locationId: req.body.locationId,
                         ownerPhoneNumber: d.number,
                         contactPhoneNumbers: [req.body.phone],
@@ -33,14 +33,14 @@ const send = async (req) => {
                         //attachments: req.body.attachments
                     });
                 } catch (error) {
-                    console.log('error at gotosend: ', error.message);
+                    console.log('error at smsitsend: ', error.message);
                 }
             });
             //update delivery status
             UpdateMessageStatus(req.body.messageId, req.body.locationId, 'delivered');
         }
     } catch (error) {
-        console.log("error at send to goto :", error.message);
+        console.log("error at send to smsit :", error.message);
     }
 }
 

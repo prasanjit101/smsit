@@ -38,26 +38,27 @@
                             for="locationID">location
                             ID<span style="color:#cbcbcb ;font-size: 14px;"> &#128712;</span></label>
 
-                        <input class="form-control mt-1 mb-2" type="text" required>
+                        <input name="locationId" class="form-control mt-1 mb-2" type="text" required>
 
                         <label data-tooltip="Enter your SMS-IT API key" data-tooltip-location="right"
                             for="apikey">SMS-IT API key<span style="color:#cbcbcb ;font-size: 14px;">
                                 &#128712;</span></label>
 
-                        <input class="form-control mt-2 mb-2" type="text" required>
+                        <input name="apikey" class="form-control mt-2 mb-2" type="text" required>
 
-                        <label data-tooltip="Enter your inbound numbers in the format of +1xxxxxxxxxx"
+                        <label
+                            data-tooltip="Enter your inbound numbers in the format of +1xxxxxxxxxx seperated by comma"
                             data-tooltip-location="right" for="inboundNumbers">Inbound
                             numbers<span style="color:#cbcbcb ;font-size: 14px;">
                                 &#128712;</span></label>
 
-                        <textarea class="form-control mt-1 mb-2" required></textarea>
+                        <textarea name="inboundNumbers" form="smsit" class="form-control mt-1 mb-2" required></textarea>
 
-                        <label data-tooltip="Enter your default outbound number" data-tooltip-location="right"
-                            for="outboundNumber">Default
+                        <label data-tooltip="Enter your default outbound number in format of +1xxxxxxxxxx"
+                            data-tooltip-location="right" for="outboundNumber">Default
                             outbound number<span style="color:#cbcbcb ;font-size: 14px;"> &#128712;</span></label>
 
-                        <input class="form-control mt-2" type="text" required>
+                        <input name="outboundNumber" class="form-control mt-2" type="text" required>
 
                         <div class="mt-4 mb-3">
                             <input value="ADD/UPDATE" class="btn d-block w-100" type="submit" required>
@@ -83,9 +84,10 @@
                 </g>
             </svg>
         </div>
+    </div>
 
-        <script src="/scripts/bootstrap.min.js"></script>
-        <script src="/scripts/smsit.js"></script>
 </body>
+<script src="/scripts/bootstrap.min.js"></script>
+<script src="/scripts/smsit.js"></script>
 
 </html>

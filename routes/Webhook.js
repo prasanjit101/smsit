@@ -1,14 +1,14 @@
 /* eslint-disable no-useless-catch */
 const hooks = require('express').Router();
 const GhlListener = require('../controllers/Outbound');
-const GotoListener = require("../controllers/gotohook");
+const smsitListener = require("../controllers/smsithook");
 const DatastoreClient = require("../models/datastore");
 
 hooks.route('/').post(GhlListener.GhlWebhook);
 hooks.route('/ghl/conversation').post(GhlListener.GhlConversationWebhook);
 
 
-hooks.route('/goto/:locationId').post(async (req, res) => {
+hooks.route('/smsit/:locationId').post(async (req, res) => {
     res.sendStatus(200);
     try {
         var x, senderData;
@@ -19,13 +19,13 @@ hooks.route('/goto/:locationId').post(async (req, res) => {
             //filter the conversation with the required locationId
             const m = l.filter(conversation => conversation.locationId === x.locationId);
             senderData = m[0];
-            GotoListener.GotoInbound(req, x, senderData);
+            smsitListener.smsitInbound(req, x, senderData);
         } else if (req.body.type === "message" && req.body.content.direction === "OUT") {
-            GotoListener.GotoOutbound(req, x, senderData);
+            smsitListener.smsitOutbound(req, x, senderData);
         }
     }
     catch (error) {
-        console.log("error at goto hook listener : ", error.message);
+        console.log("error at smsit hook listener : ", error.message);
     }
 
 });
