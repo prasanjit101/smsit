@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect To SMS-IT</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/ghl.css">
+</head>
+<style>
+    body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-family: Avenir, sans-serif;
+        overflow: hidden;
+    }
+</style>
+
+<body>
+    <div class="header">
+
+        <!--Content before waves-->
+        <div class="inner-header flex p-3" style="justify-content: start;">
+            <div id="message" class="mt-4">
+                <p>[location ID]</p>
+                <p>[Name]</p>
+            </div>
+            <div class="container mt-4">
+                <section class="login-clean p-1">
+                    <form id="smsit">
+                        <label data-tooltip="Enter your GoHighLevel location ID" data-tooltip-location="right"
+                            for="locationID">location
+                            ID<span style="color:#cbcbcb ;font-size: 14px;"> &#128712;</span></label>
+
+                        <input class="form-control mt-1 mb-2" type="text" required>
+
+                        <label data-tooltip="Enter your SMS-IT API key" data-tooltip-location="right"
+                            for="apikey">SMS-IT API key<span style="color:#cbcbcb ;font-size: 14px;">
+                                &#128712;</span></label>
+
+                        <input class="form-control mt-2 mb-2" type="text" required>
+
+                        <label data-tooltip="Enter your inbound numbers in the format of +1xxxxxxxxxx"
+                            data-tooltip-location="right" for="inboundNumbers">Inbound
+                            numbers<span style="color:#cbcbcb ;font-size: 14px;">
+                                &#128712;</span></label>
+
+                        <textarea class="form-control mt-1 mb-2" required></textarea>
+
+                        <label data-tooltip="Enter your default outbound number" data-tooltip-location="right"
+                            for="outboundNumber">Default
+                            outbound number<span style="color:#cbcbcb ;font-size: 14px;"> &#128712;</span></label>
+
+                        <input class="form-control mt-2" type="text" required>
+
+                        <div class="mt-4 mb-3">
+                            <input value="ADD/UPDATE" class="btn d-block w-100" type="submit" required>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <!--Waves Container-->
+        <div>
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                <defs>
+                    <path id="gentle-wave"
+                        d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                </defs>
+                <g class="parallax">
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+                </g>
+            </svg>
+        </div>
+
+        <script src="/scripts/bootstrap.min.js"></script>
+        <script src="/scripts/smsit.js"></script>
+</body>
+
+</html>
