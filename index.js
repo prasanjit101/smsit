@@ -4,9 +4,7 @@ const dot = require("./config");
 const path = require('path');
 const multer = require('multer');
 const cors = require("cors");
-// const { GotoAuth, FormHandler, GetForm } = require("./controllers/goto/gotoauth.js");
-// const { GhlAuthCode } = require("./controllers/ghl/ghlauth");
-// const { CreateHook } = require("./controllers/ChannelHandler");
+const { FormHandler, exchangeAuthCode, SetForm } = require("./controllers/Authcode");
 const helmet = require("helmet");
 // const hooks = require('./routes/Webhook');
 
@@ -23,7 +21,6 @@ app.use(express.raw({ type: 'application/octet-stream' }));
 
 app.enable('trust proxy');
 
-/* 
 //logging capabilites in development to check requests and responses made
 if (process.env.NODE_ENV !== 'production') {
     const morganBody = require('morgan-body');
@@ -37,8 +34,7 @@ if (process.env.NODE_ENV !== 'production') {
         noColors: true,
         stream: rfsStream
     });
-} 
-*/
+}
 
 //for the static pages
 app.get("/", (req, res) => {
@@ -55,11 +51,10 @@ app.get("/redirect", (req, res) => {
 /hooks/goto/locationId -> goto webhook
  */
 //rotes
-// app.post("/goto-code", GotoAuth);//for goto oauth code
-// app.post("/ghl-code", GhlAuthCode);//for ghl oauth code
-// app.post("/form", FormHandler);//post form data
-// app.post("/get-form", GetForm);//get form data
-// app.post("/trigger-channel", CreateHook);//trigger task
+
+app.post("/ghl-code", exchangeAuthCode);//for ghl oauth code
+app.post("/form", FormHandler);//post form data
+app.post("/get-form", SetForm);//get form data
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);

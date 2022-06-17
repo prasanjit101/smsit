@@ -166,8 +166,9 @@ textarea {
 
 }
 
-.error {
-    color: red;
+.error a {
+    color: #ffffff;
+    font-size: 14px;
     text-decoration: underline;
 }
 
