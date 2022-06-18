@@ -40,8 +40,9 @@ const GetForm = async (locationId) => {
         if (formData) {
             document.querySelector('input[name="locationId"]').value = formData.locationId,
                 document.querySelector('input[name="apikey"]').value = formData.apikey,
-                document.querySelector('textarea[name="inboundNumbers"]').value = formData.inboundNumbers.toString(),
+                document.querySelector('input[name="inboundNumbers"]').value = formData.inboundNumbers.toString(),
                 document.querySelector('input[name="outboundNumber"]').value = formData.outboundNumber
+            document.querySelector('input[name="gatewaykey"]').value = formData.gatewaykey
         }
     } catch (e) {
         document.querySelector('input[name="locationId"]').value = locationId;
@@ -72,9 +73,10 @@ document.getElementById('smsit').addEventListener("submit", async function (e) {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         method: "POST",
         body: new URLSearchParams({
-            locationId: document.querySelector('input[name="locationId"]').value,
-            apikey: document.querySelector('input[name="apikey"]').value,
-            inboundNumbers: document.querySelector('textarea[name="inboundNumbers"]').value.trim().replace(/\s/g, ''),
+            locationId: document.querySelector('input[name="locationId"]').value.trim(),
+            apikey: document.querySelector('input[name="apikey"]').value.trim(),
+            gatewaykey: document.querySelector('input[name="gatewaykey"]').value.trim(),
+            inboundNumbers: document.querySelector('input[name="inboundNumbers"]').value.trim().replace(/\s/g, ''),
             outboundNumber: document.querySelector('input[name="outboundNumber"]').value.trim().replace(/\s/g, ''),
         })
     }).then(

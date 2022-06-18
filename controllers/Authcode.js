@@ -39,7 +39,7 @@ const GetLocation = async (locationId, access_token) => {
     };
     let response = await axios(options);
     let data = await response.data;
-    return data[locationId];
+    return data[locationId] || data.location;
 }
 
 //sets the oauth cache and db ,and returns new tokens 
@@ -113,13 +113,15 @@ exports.FormHandler = async (req, res) => {
             });
             val.inboundNumbers = b;
             val.apikey = req.body.apikey.trim();
+            val.gatewaykey = req.body.gatewaykey.trim();
+
             await DatastoreClient.save('locations', req.body.locationId, val);
             res.status(200).json({ message: 'Your data is updated successfully' });
         } else {
             res.status(401).json({ message: 'error in updating form values: location not found. Retry logging in' });
         }
     } catch (error) {
-        res.status(400).json({ message: 'Error' });
+        res.status(400).json({ message: error.message });
     }
 }
 

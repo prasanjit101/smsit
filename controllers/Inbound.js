@@ -1,5 +1,5 @@
 const { OutboundBlockCache } = require("../services/Cache");
-const { GhlRecieve, GhlSend, CreateContact } = require("./ghlApi");
+const { GhlSend, GhlRecieve, UpdateMessageStatus, CreateContact } = require("./ghlApi");
 const { ApiClientwToken } = require("../services/ApiClient");
 const DatastoreClient = require("../models/datastore");
 
@@ -25,19 +25,13 @@ const getContact = async (locationId, phoneNumber) => {
 }
 
 
-const GotoInbound = async (req, recieverData = null, senderData = null) => {
-    console.log("--GotoInbound--");
-    console.log("GotoInbound data: ", req.body);
-    if (!recieverData) {
-        recieverData = await DatastoreClient.get('locations', req.params.locationId);
-    }
+const smsitInbound = async (req, number, mynumber, msg) => {
+    let recieverData = await DatastoreClient.ArrLookUp('locations', 'inboundNumbers', mynumber);
     console.log("recieverData: ", recieverData);
     if (recieverData) {
-        if (!senderData) {
-            const l = await DatastoreClient.FilterEquals('conversations', 'phone', req.body.content.contactPhoneNumbers[0]);
-            const m = l.filter(conversation => conversation.locationId === recieverData.locationId);
-            senderData = m[0];
-        }
+        const l = await DatastoreClient.FilterEquals('conversations', 'phone', number);
+        const m = l.filter(conversation => conversation.locationId === recieverData.locationId);
+        senderData = m[0];
         //contact id present in db
         console.log("senderData: ", senderData);
         if (senderData) {
@@ -90,4 +84,4 @@ const GotoInbound = async (req, recieverData = null, senderData = null) => {
         }
     }
 }
-module.exports = { GotoInbound };
+module.exports = { smsitInbound };

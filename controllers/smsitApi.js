@@ -8,38 +8,120 @@ const is401Error = (error) => {
     return false;
 }
 
-//send outbound message using sinch api
-exports.smsitSend = async (body) => {
-    //get sinch service plan id and sinch access token from the  datastore using the location id
-    const res = await DatastoreClient.get('locations', body.locationId);
-    let response;
-    const options = {
+//contolpanel.smsit.ai -> number eg = 917005878164
+
+exports.smsitaddContacts = async (apikey, number) => {
+    let options = {
         method: 'POST',
-        url: 'https://api.jive.com/messaging/v1/messages',
+        url: 'https://controlpanel.smsit.ai/apis/addcontact/',
         headers: {
-            'Authorization': `Bearer ${res.goto_access_token}`,
-            'content-type': 'application/json'
+            "Content-Type": "application/x-www-form-urlencoded",
         },
-        data: {
-            ownerPhoneNumber: body.ownerPhoneNumber,
-            contactPhoneNumbers: body.contactPhoneNumbers,
-            body: body.body,
+        params: {
+            "apikey": apikey,
+            "group": "ghl",
+            "number": number,
         }
     };
-    try {
-        response = await axios(options);
-        return response.data;
-    } catch (error) {
-        //console.log('error: ', error.response.data);
-        if (is401Error(error)) {
-            const a = await GotoRefreshToken(body.locationId, res.goto_refresh_token);
-            options.headers.Authorization = `Bearer ${a.access_token}`;
-            response = await axios(options);
-            return response.data;
+    let response = await axios(options);
+    let data = await response.data;
+    return data;
+    /* {
+    "status":"-7",
+    "msg":"Number is already subscribed for home"
+    } */
+}
+
+exports.smsitGetContacts = async (apikey, number) => {
+    let options = {
+        method: 'POST',
+        url: 'https://controlpanel.smsit.ai/apis/getcontacts/',
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        params: {
+            "apikey": apikey,
+            "number": number,
+            "sortby": "created",
         }
-    }
+    };
+    let response = await axios(options);
+    let data = await response.data;
+    return data;
+    /* { 
+    "status":"0",
+    "contacts": [
+    {
+        "id": "23",
+        "name": "John Doe",
+        "birthday": "1981-06-12",
+        "email": "johndoe@smsit.ai",
+        "number": "14156007425",
+        "group": "Group One",
+        "subscriber": "Yes",
+        "source": "SMS",
+        "carrier":"Verizon",
+        "date": "2021-03-12 11:02:04"
+        },
+    {
+        "id": "32",
+        "name": "John Smith",
+        "birthday": "1978-01-13",
+        "email": "",
+        "number": "18159819712",
+        "group": "Group Two",
+        "subscriber": "Yes",
+        "source": "Kiosk",
+        "carrier":"",
+        "date": "2021-12-17 13:12:04"
+        }
+    ]
+} */
 }
 
-exports.createHook = async (body) => {
 
+//send outbound message using sinch api
+exports.smsitSend = async (apikey, from, to, message) => {
+    let options = {
+        method: 'POST',
+        url: 'https://controlpanel.smsit.ai/apis/smscontact/',
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        params: {
+            "apikey": apikey,
+            "from": from,
+            "to": to,
+            "message": message
+        }
+    };
+    let response = await axios(options);
+    let data = await response.data;
+    return data;
+    /* {
+        "status":"-3",
+        "msg":"The 'from' number passed in doesn't exist in your account or isn't SMS-enabled."
+    } */
 }
+
+exports.smsitGetDeliveryStats = async (apikey, number) => {
+    let options = {
+        method: 'POST',
+        url: 'https://controlpanel.smsit.ai/apis/getcontactsmsdeliveryreport/',
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        params: {
+            "apikey": apikey,
+            "number": number
+        }
+    };
+    let response = await axios(options);
+    let data = await response.data;
+    return data;
+    /* {
+    "smsstatus":"delivered",
+    "errormsg":""
+    } */
+}
+

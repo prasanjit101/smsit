@@ -45,13 +45,19 @@
 
                         <input name="apikey" class="form-control mt-2 mb-2" type="text" required>
 
+                        <label data-tooltip="Enter your SMS-IT gateway API key" data-tooltip-location="right"
+                            for="gatewaykey">SMS-IT gateway API key<span style="color:#cbcbcb ;font-size: 14px;">
+                                &#128712;</span></label>
+
+                        <input name="gatewaykey" class="form-control mt-2 mb-2" type="text" required>
+
                         <label
                             data-tooltip="Enter your inbound numbers in the format of +1xxxxxxxxxx seperated by comma"
                             data-tooltip-location="right" for="inboundNumbers">Inbound
                             numbers<span style="color:#cbcbcb ;font-size: 14px;">
                                 &#128712;</span></label>
 
-                        <textarea name="inboundNumbers" form="smsit" class="form-control mt-1 mb-2" required></textarea>
+                        <input name="inboundNumbers" type="text" class="form-control mt-1 mb-2" required></input>
 
                         <label data-tooltip="Enter your default outbound number in format of +1xxxxxxxxxx"
                             data-tooltip-location="right" for="outboundNumber">Default

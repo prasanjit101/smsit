@@ -48,7 +48,7 @@ app.get("/redirect", (req, res) => {
 /* Hooks - 
 /hooks -> ghl webhook
 /hooks/ghl/conversation -> ghl conversation webhook
-/hooks/goto/locationId -> goto webhook
+/hooks/smsit/your-number -> smsit webhook
  */
 //rotes
 
