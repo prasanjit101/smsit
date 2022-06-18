@@ -36,10 +36,11 @@ const GetForm = async (locationId) => {
             body: JSON.stringify({ code: locationId })
         });
         const formData = await res.json();
+        console.log('formData--', formData);
         if (formData) {
             document.querySelector('input[name="locationId"]').value = formData.locationId,
                 document.querySelector('input[name="apikey"]').value = formData.apikey,
-                document.querySelector('input[name="inboundNumbers"]').value = formData.inboundNumbers,
+                document.querySelector('textarea[name="inboundNumbers"]').value = formData.inboundNumbers.toString(),
                 document.querySelector('input[name="outboundNumber"]').value = formData.outboundNumber
         }
     } catch (e) {
@@ -55,7 +56,7 @@ if (authcode) {
             console.log("data1", data[1]);
             document.getElementById('message').innerHTML = `
             <p>[location ID] ${data[0]}</p>
-            <p>[Name] ${data[1].location.business.name}</p>`;
+            <p>[Name] ${data[1]}</p>`;
             GetForm(data[0]);
         }).catch(err => {
             console.log(err.message);

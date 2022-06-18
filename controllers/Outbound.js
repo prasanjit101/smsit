@@ -1,5 +1,5 @@
-const { UpdateMessageStatus } = require("./ghl/ghlApi");
-const { smsitSend } = require("./smsit/smsitApi");
+const { UpdateMessageStatus } = require("./ghlApi");
+const { smsitSend } = require("./smsitApi");
 const { OutboundBlockCache } = require("../services/Cache");
 const DatastoreClient = require("../models/datastore");
 
@@ -72,7 +72,7 @@ const GhlConversationWebhook = async (req, res) => {
             setTimeout(() => {
                 const block = OutboundBlockCache.get(req.body.messageId);
                 if (!block) {
-                    await send(req);
+                    send(req);
                 } else {
                     console.log("Outbound blocked for message ID:", req.body.messageId);
                     OutboundBlockCache.del(req.body.messageId);

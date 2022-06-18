@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 const hooks = require('express').Router();
 const GhlListener = require('../controllers/Outbound');
-const smsitListener = require("../controllers/smsithook");
+const smsitListener = require("../controllers/Inbound");
 const DatastoreClient = require("../models/datastore");
 
 hooks.route('/').post(GhlListener.GhlWebhook);

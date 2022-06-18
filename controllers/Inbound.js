@@ -1,5 +1,5 @@
 const { OutboundBlockCache } = require("../services/Cache");
-const { GhlRecieve, GhlSend, CreateContact } = require("./ghl/ghlApi");
+const { GhlRecieve, GhlSend, CreateContact } = require("./ghlApi");
 const { ApiClientwToken } = require("../services/ApiClient");
 const DatastoreClient = require("../models/datastore");
 

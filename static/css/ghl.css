@@ -161,7 +161,7 @@ textarea {
     resize: none;
     height: 66px;
     font-weight: 450;
-    font-size: 0.95rem;
+    font-size: 14px !important;
     padding: 7px 17px;
 
 }
@@ -173,13 +173,13 @@ textarea {
 }
 
 input[type=text] {
-    font-size: 0.95rem;
+    font-size: 14px;
     font-weight: 450;
     padding: 7px 17px;
 }
 
 input[type=submit] {
-    font-size: 1rem;
+    font-size: 14px;
 }
 
 [data-tooltip] {

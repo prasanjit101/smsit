@@ -1,4 +1,4 @@
-const { ApiClientwToken } = require("../../services/ApiClient");
+const { ApiClientwToken } = require("../services/ApiClient");
 const ghl_api_version = process.env.API_VERSION;
 const conversationProviderId = process.env.CONVERSATION_PROVIDER_ID;
 

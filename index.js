@@ -6,7 +6,7 @@ const multer = require('multer');
 const cors = require("cors");
 const { FormHandler, exchangeAuthCode, SetForm } = require("./controllers/Authcode");
 const helmet = require("helmet");
-// const hooks = require('./routes/Webhook');
+const hooks = require('./routes/Webhook');
 
 const PORT = dot.port || 8080;
 
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.raw({ type: 'application/octet-stream' }));
-// app.use('/hooks', hooks);
+app.use('/hooks', hooks);
 
 app.enable('trust proxy');
 

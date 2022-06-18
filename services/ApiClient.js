@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 const axios = require('axios').default;
 const DatastoreClient = require("../models/datastore");
-const { GhlRefreshToken } = require("../controllers/ghl/ghlauth");
+const { GhlRefreshToken } = require("../controllers/Authcode");
 
 const is401Error = (error) => {
     if (error.response && error.response.status === 401) {

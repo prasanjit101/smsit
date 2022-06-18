@@ -1,5 +1,5 @@
 const axios = require('axios').default;
-const DatastoreClient = require("../../models/datastore");
+const DatastoreClient = require("../models/datastore");
 
 const is401Error = (error) => {
     if (error.response && error.response.status === 401) {

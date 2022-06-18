@@ -39,8 +39,7 @@ const GetLocation = async (locationId, access_token) => {
     };
     let response = await axios(options);
     let data = await response.data;
-    console.log('locations', data);
-    return data.location;
+    return data[locationId];
 }
 
 //sets the oauth cache and db ,and returns new tokens 
@@ -88,21 +87,13 @@ exports.exchangeAuthCode = async (req, res) => {
             await DatastoreClient.save('locations', credentials.locationId, obj);
             //save in cache with ttl of one and a half days
         }
-        console.log('Credentials', data);
-        res.status(200).json([credentials.locationId, locationDetails]);
+        res.status(200).json([credentials.locationId, locationDetails.business.name]);
 
     } catch (e) {
         try {
             let locationDetails = await DatastoreClient.FilterEquals('locations', 'code', req.body.code);
             locationDetails = locationDetails[0];
-            res.status(200).json([locationDetails.locationId, {
-                location: {
-                    name: locationDetails.name,
-                    business: {
-                        name: locationDetails.businessName
-                    }
-                }
-            }]);
+            res.status(200).json([locationDetails.locationId, locationDetails.businessName]);
         } catch (e) {
             res.status(403).json({ error: e.message });
         }
