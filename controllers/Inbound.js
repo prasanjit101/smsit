@@ -1,5 +1,5 @@
 const { OutboundBlockCache } = require("../services/Cache");
-const { GhlSend, GhlRecieve, UpdateMessageStatus, CreateContact } = require("./ghlApi");
+const { GhlSend, GhlRecieve, CreateContact } = require("./ghlApi");
 const { ApiClientwToken } = require("../services/ApiClient");
 const DatastoreClient = require("../models/datastore");
 
@@ -26,20 +26,21 @@ const getContact = async (locationId, phoneNumber) => {
 
 
 const smsitInbound = async (req, number, mynumber, msg) => {
-    let recieverData = await DatastoreClient.ArrLookUp('locations', 'inboundNumbers', mynumber);
+    let recieverData = await DatastoreClient.ArrLookUp('locations', 'inboundNumbers', '+' + mynumber);
+    //assuming only every location id has unique inbound numbers
+    recieverData = recieverData[0];
     console.log("recieverData: ", recieverData);
     if (recieverData) {
         const l = await DatastoreClient.FilterEquals('conversations', 'phone', number);
-        const m = l.filter(conversation => conversation.locationId === recieverData.locationId);
-        senderData = m[0];
-        //contact id present in db
+        const senderData = l.find(conversation => conversation.locationId === recieverData.locationId);//if the conversation belongs to the location iD
         console.log("senderData: ", senderData);
+        //contact id present in db
         if (senderData) {
             //make inbound to ghl
             process.nextTick(async () => {
                 try {
                     await GhlRecieve(
-                        req.body.content.body,
+                        msg,
                         senderData.conversationId,
                         recieverData.locationId
                     );
@@ -51,7 +52,7 @@ const smsitInbound = async (req, number, mynumber, msg) => {
         //contact id not present in db
         else {
             //create/get contact
-            const contact = await getContact(recieverData.locationId, req.body.content.contactPhoneNumbers[0]);
+            const contact = await getContact(recieverData.locationId, '+' + number);
             console.log("contact: ", contact);
             if (contact) {
                 //send a message to the contact
@@ -64,14 +65,14 @@ const smsitInbound = async (req, number, mynumber, msg) => {
                 await DatastoreClient.save('conversations', sent.conversationId, {
                     conversationId: sent.conversationId,
                     contactId: contact,
-                    phone: req.body.content.contactPhoneNumbers[0],
+                    phone: '+' + number,
                     locationId: recieverData.locationId
                 });
                 //make inbound to ghl
                 process.nextTick(async () => {
                     try {
                         await GhlRecieve(
-                            req.body.content.body,
+                            msg,
                             sent.conversationId,
                             recieverData.locationId
                         );

@@ -19,16 +19,12 @@ hooks.route('/smsit/:number').post(async (req, res) => {
             if (signature === req.headers["HTTP_X_SG_SIGNATURE"]) {
                 let msgs = req.body.messages;
                 console.log("smsitInbound data: ", msgs);
-                let mynumber = req.params.number;
+                let mynumber = req.params.number;//17005878164
+                //for each message in the message list
                 msgs.forEach(message => {
-                    let number = message.number;
-                    let msg = message.message;
-                    /* //get conversations where phone number is equal to contactphonenumbers
-                    const l = DatastoreClient.FilterEquals('conversations', 'phone', number);
-                    //filter the conversation with the required locationId
-                    const m = l.filter(conversation => conversation.locationId === message.locationId);
-                    const senderData = m[0]; */
-                    smsitListener.smsitInbound(req, number, mynumber, msg);
+                    //let number = message.number; //+1679588986
+                    //let msg = message.message;
+                    smsitListener.smsitInbound(req, message.number, mynumber, message.message);
                 });
             } else {
                 res.sendStatus(401);

@@ -25,7 +25,9 @@ const send = async (req, phoneNumber) => {
         if (d) {
             process.nextTick(async () => {
                 try {
-                    let sentresult = await smsitSend(d.apikey, d.ouboundNumber, phoneNumber, req.body.message);
+                    ;
+                    const from = d.ouboundNumber.replace(/[^0-9]/g, '');
+                    let sentresult = await smsitSend(d.apikey, from, phoneNumber, req.body.message);
                     console.log("Result of message sent through smsit API : ", sentresult.msg);
                 } catch (error) {
                     console.log('error at smsitsend: ', error.message);
