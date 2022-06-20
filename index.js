@@ -17,9 +17,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'static')));
 app.use(express.raw({ type: 'application/octet-stream' }));
+app.enable('trust proxy');
+
+/* Hooks - 
+/hooks -> ghl webhook
+/hooks/ghl/conversation -> ghl conversation webhook
+/hooks/smsit/{your-number} -> smsit webhook
+ */
+//routes
 app.use('/hooks', hooks);
 
-app.enable('trust proxy');
 
 //logging capabilites in development to check requests and responses made
 if (process.env.NODE_ENV !== 'production') {
@@ -44,13 +51,6 @@ app.get("/", (req, res) => {
 app.get("/redirect", (req, res) => {
     res.sendFile(path.join(__dirname, 'static/landing.html'));
 });
-
-/* Hooks - 
-/hooks -> ghl webhook
-/hooks/ghl/conversation -> ghl conversation webhook
-/hooks/smsit/your-number -> smsit webhook
- */
-//rotes
 
 app.post("/ghl-code", exchangeAuthCode);//for ghl oauth code
 app.post("/form", FormHandler);//post form data

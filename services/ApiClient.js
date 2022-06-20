@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 const axios = require('axios').default;
+const { RefreshToken } = require('../controllers/Authcode');
 const DatastoreClient = require("../models/datastore");
-const { GhlRefreshToken } = require("../controllers/Authcode");
 
 const is401Error = (error) => {
     if (error.response && error.response.status === 401) {
@@ -14,19 +14,23 @@ const is401Error = (error) => {
 //function makes request with tokens, if fails-> it will ask for refreshed tokens and then make a call again 
 exports.ApiClientwToken = async (config, locationId, tokens = null) => {
     try {
-        let d = await DatastoreClient.get('locations', locationId);
-        if (d) {
-            tokens = {
-                ghl_access_token: d.ghl_access_token,
-                ghl_refresh_token: d.ghl_refresh_token
+        if (tokens) {
+            config.headers.Authorization = `Bearer ${tokens.access_token}`;
+        } else {
+            let d = await DatastoreClient.get('locations', locationId);
+            if (d) {
+                tokens = {
+                    access_token: d.access_token,
+                    refresh_token: d.refresh_token
+                }
+                config.headers.Authorization = `Bearer ${d.access_token}`;
             }
-            config.headers.Authorization = `Bearer ${d.ghl_access_token}`;
             const response = await axios(config);
             return response.data;
         }
     } catch (error) {
         if (is401Error(error)) {
-            const a = await GhlRefreshToken(tokens.ghl_refresh_token);
+            const a = await RefreshToken(tokens.refresh_token);
             config.headers.Authorization = `Bearer ${a.access_token}`;
             const response = await axios(config);
             return response.data;

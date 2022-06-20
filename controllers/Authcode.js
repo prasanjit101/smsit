@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-catch */
 const axios = require('axios').default;
 const DatastoreClient = require('../models/datastore');
-const dot = require("../config");
 
 const ghl_api_version = process.env.API_VERSION;
 
@@ -59,7 +58,9 @@ exports.RefreshToken = async (refresh_token) => {
 //exchange auth code for access token
 exports.exchangeAuthCode = async (req, res) => {
     try {
+        //get GHL credentials first to store and use later
         var credentials = await GetCred(req.body.code);
+        //get location details to send to the frontend
         var locationDetails = await GetLocation(credentials.locationId, credentials.access_token);
         //if location id present in db
         let value = await DatastoreClient.get('locations', credentials.locationId);
@@ -85,7 +86,6 @@ exports.exchangeAuthCode = async (req, res) => {
             }
             //save in database
             await DatastoreClient.save('locations', credentials.locationId, obj);
-            //save in cache with ttl of one and a half days
         }
         res.status(200).json([credentials.locationId, locationDetails.business.name]);
 
@@ -128,8 +128,18 @@ exports.FormHandler = async (req, res) => {
 
 exports.SetForm = async (req, res) => {
     try {
-        const id = req.body.code;
-        const data = await DatastoreClient.get('locations', id);
+        const id = req.body.code;// id =location id
+        let data = await DatastoreClient.get('locations', id);
+        data = {
+            apikey: data.apikey,
+            businessName: data.businessName,
+            code: data.code,
+            gatewaykey: data.gatewaykey,
+            inboundNumbers: data.inboundNumbers,
+            locationId: data.locationId,
+            name: data.name,
+            outboundNumber: data.outboundNumber,
+        }
         res.status(200).json(data);
     } catch (error) {
         return null;

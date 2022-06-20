@@ -25,12 +25,11 @@ const getContact = async (locationId, phoneNumber) => {
 }
 
 
-const smsitInbound = async (req, number, mynumber, msg) => {
-    let recieverData = await DatastoreClient.ArrLookUp('locations', 'inboundNumbers', '+' + mynumber);
+const smsitInbound = async (req, number, msg, recieverData) => {
     //assuming only every location id has unique inbound numbers
-    recieverData = recieverData[0];
     console.log("recieverData: ", recieverData);
     if (recieverData) {
+        //get conversation fields
         const l = await DatastoreClient.FilterEquals('conversations', 'phone', number);
         const senderData = l.find(conversation => conversation.locationId === recieverData.locationId);//if the conversation belongs to the location iD
         console.log("senderData: ", senderData);
@@ -52,11 +51,12 @@ const smsitInbound = async (req, number, mynumber, msg) => {
         //contact id not present in db
         else {
             //create/get contact
-            const contact = await getContact(recieverData.locationId, '+' + number);
+            const contact = await getContact(recieverData.locationId, number);
             console.log("contact: ", contact);
             if (contact) {
                 //send a message to the contact
                 const sent = await GhlSend(contact, recieverData.locationId, ".");
+                console.log("Default ghl send helper data for inbound : ", sent);
                 //insert the message into outboundBlock cache
                 process.nextTick(async () => {
                     await OutboundBlockCache.set(sent.messageId, 1);
@@ -65,7 +65,7 @@ const smsitInbound = async (req, number, mynumber, msg) => {
                 await DatastoreClient.save('conversations', sent.conversationId, {
                     conversationId: sent.conversationId,
                     contactId: contact,
-                    phone: '+' + number,
+                    phone: number,
                     locationId: recieverData.locationId
                 });
                 //make inbound to ghl
@@ -81,6 +81,8 @@ const smsitInbound = async (req, number, mynumber, msg) => {
                         console.log('error at fresh inbound process tick : ', error.message);
                     }
                 });
+            } else {
+                console.log("contact not found and cannot be created");
             }
         }
     }

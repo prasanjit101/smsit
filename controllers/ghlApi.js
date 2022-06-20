@@ -14,7 +14,7 @@ exports.GhlSend = async (contactId, locationId, message) => {
             message: message,
         }
     }, locationId);
-    return data;//convo id,message id
+    return data;//conversation id,message id
 }
 
 //add inbound message using api |  -> (token,version,message,convoid,locationid)
@@ -30,7 +30,7 @@ exports.GhlRecieve = async (message, conversationId, locationId) => {
             conversationProviderId: conversationProviderId,
         }
     }, locationId);
-    return data;//convo id,message id
+    return data;//conversation id,message id
 }
 
 
@@ -69,6 +69,7 @@ exports.CreateContact = async (locationId, phone) => {
         }, locationId);
         return data;
     } catch (error) {
+        console.log('Create contact error');
         return null;
     }
 }

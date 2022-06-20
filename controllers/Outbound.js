@@ -18,29 +18,28 @@ const GhlWebhook = async (req, res) => {
     }
 }
 
-const send = async (req, phoneNumber) => {
+const send = async (req, phoneNumber, apikey) => {
     try {
         let d = await DatastoreClient.get('locations', req.body.locationId);
 
         if (d) {
             process.nextTick(async () => {
                 try {
-                    ;
-                    const from = d.ouboundNumber.replace(/[^0-9]/g, '');
-                    let sentresult = await smsitSend(d.apikey, from, phoneNumber, req.body.message);
+                    const from = d.outboundNumber.replace(/[^0-9]/g, '');
+                    let sentresult = await smsitSend(apikey, from, phoneNumber, req.body.message);
                     console.log("Result of message sent through smsit API : ", sentresult.msg);
+                    //update delivery status
+                    let d_report = await smsitGetDeliveryStats(apikey, phoneNumber);
+                    if (d_report === "delivered") {
+                        UpdateMessageStatus(req.body.messageId, req.body.locationId, 'delivered');
+                    } else {
+                        UpdateMessageStatus(req.body.messageId, req.body.locationId, 'failed');
+                        console.log("error by smsit: ", d_report.errormsg);
+                    }
                 } catch (error) {
                     console.log('error at smsitsend: ', error.message);
                 }
             });
-            //update delivery status
-            let d_report = await smsitGetDeliveryStats(d.apikey, phoneNumber);
-            if (d_report === "delivered") {
-                UpdateMessageStatus(req.body.messageId, req.body.locationId, 'delivered');
-            } else {
-                UpdateMessageStatus(req.body.messageId, req.body.locationId, 'failed');
-                console.log("error by smsit: ", d_report.errormsg);
-            }
         }
     } catch (error) {
         console.log("error at send to smsit :", error.message);
@@ -48,11 +47,14 @@ const send = async (req, phoneNumber) => {
 }
 
 const GhlConversationWebhook = async (req, res) => {
+    res.sendStatus(200);
     if (req.body.type === "SMS") {
         try {
             let phoneNumber = req.body.phone;
             phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
-            OutboundBlockCache.set(req.body.messageId, 0);
+            //get credentials from 
+            let apikey = await DatastoreClient.get('locations', req.body.locationId);
+            apikey = apikey.apikey;//apikey  = apikey of smsit
             var val = await DatastoreClient.get('conversations', req.body.conversationId);
             if (val) {
                 //if contact is present in our db  
@@ -75,12 +77,12 @@ const GhlConversationWebhook = async (req, res) => {
                 });
             }
             //get the contact from smsit account
-            let contact = await smsitGetContacts(val.apikey, phoneNumber);
+            let contact = await smsitGetContacts(apikey, phoneNumber);
             if (contact.status === "0") {
                 //contact exists
                 setTimeout(() => {
                     if (!OutboundBlockCache.has(req.body.messageId)) {
-                        send(req, phoneNumber);
+                        send(req, phoneNumber, apikey);
                     } else {
                         console.log("Outbound blocked for message ID:", req.body.messageId);
                         OutboundBlockCache.del(req.body.messageId);
@@ -88,13 +90,14 @@ const GhlConversationWebhook = async (req, res) => {
                 }, 2000);
             } else if (contact.status === "-7") {
                 //contact does not exist -> add contact in smsit
-                let addContact = await smsitaddContacts(val.apikey, phoneNumber);
+                let addContact = await smsitaddContacts(apikey, phoneNumber);
+                addContact = addContact[0];
                 if (addContact.status === "0") {
                     //contact added
                     console.log("SMSIT - > contact added in group \'ghl\'");
                     setTimeout(() => {
                         if (!OutboundBlockCache.has(req.body.messageId)) {
-                            send(req, phoneNumber);
+                            send(req, phoneNumber, apikey);
                         }
                         else {
                             console.log("Outbound blocked for message ID:", req.body.messageId);
@@ -104,19 +107,11 @@ const GhlConversationWebhook = async (req, res) => {
                 }
                 else {
                     console.log("Error in contact create : ", addContact.msg);
+                    UpdateMessageStatus(req.body.messageId, req.body.locationId, 'failed');
                 }
             } else {
-                let emsg;
-                if (contact.status === "-1") {
-                    emsg = "Invalid API Key";
-                } else if (contact.status === "-2") {
-                    emsg = "Invalid group";
-                } else if (contact.status === "-4") {
-                    emsg = "Invalid subscriber";
-                } else if (contact.status === "-5") {
-                    emsg = "Invalid sortby";
-                }
-                console.log("error at smsitGetContacts: ", emsg);
+                console.log("error at smsitGetContacts: ", contact.msg);
+                UpdateMessageStatus(req.body.messageId, req.body.locationId, 'failed');
             }
 
         } catch (error) {

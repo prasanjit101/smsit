@@ -7,7 +7,6 @@ const getcode = () => {
         console.log('code', code[1]);
         return code[1];
     } catch (e) {
-        //get element by id
         alert("Error! Please SignIn with GHL again");
         console.log(e.message);
     }
