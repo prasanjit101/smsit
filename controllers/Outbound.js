@@ -27,19 +27,22 @@ const send = async (req, phoneNumber, apikey) => {
                 try {
                     const from = d.outboundNumber.replace(/[^0-9]/g, '');
                     let sentresult = await smsitSend(apikey, from, phoneNumber, req.body.message);
+                    sentresult = sentresult[0];
                     console.log("Result of message sent through smsit API : ", sentresult.msg);
-                    //update delivery status
-                    let d_report = await smsitGetDeliveryStats(apikey, phoneNumber);
-                    if (d_report === "delivered") {
-                        UpdateMessageStatus(req.body.messageId, req.body.locationId, 'delivered');
-                    } else {
-                        UpdateMessageStatus(req.body.messageId, req.body.locationId, 'failed');
-                        console.log("error by smsit: ", d_report.errormsg);
-                    }
                 } catch (error) {
                     console.log('error at smsitsend: ', error.message);
                 }
             });
+            setTimeout(async () => {
+                //update delivery status
+                let d_report = await smsitGetDeliveryStats(apikey, phoneNumber);
+                if (d_report === "delivered") {
+                    UpdateMessageStatus(req.body.messageId, req.body.locationId, 'delivered');
+                } else {
+                    UpdateMessageStatus(req.body.messageId, req.body.locationId, 'failed');
+                    console.log("error by smsit: ", d_report.msg || d_report.emsg);
+                }
+            }, 2000);
         }
     } catch (error) {
         console.log("error at send to smsit :", error.message);

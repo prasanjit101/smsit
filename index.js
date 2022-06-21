@@ -29,7 +29,7 @@ app.use('/hooks', hooks);
 
 
 //logging capabilites in development to check requests and responses made
-if (process.env.NODE_ENV !== 'production') {
+/* if (process.env.NODE_ENV !== 'production') {
     const morganBody = require('morgan-body');
     const rfs = require("rotating-file-stream");
     const rfsStream = rfs.createStream("./logs/express.log", {
@@ -41,7 +41,7 @@ if (process.env.NODE_ENV !== 'production') {
         noColors: true,
         stream: rfsStream
     });
-}
+} */
 
 //for the static pages
 app.get("/", (req, res) => {

@@ -13,7 +13,7 @@ const is401Error = (error) => {
 exports.smsitaddContacts = async (apikey, number) => {
     let options = {
         method: 'POST',
-        url: 'https://controlpanel.smsit.ai/apis/addcontact/',
+        url: 'https://decontrolpanel.smsit.ai/apis/addcontact/',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -35,7 +35,7 @@ exports.smsitaddContacts = async (apikey, number) => {
 exports.smsitGetContacts = async (apikey, number) => {
     let options = {
         method: 'POST',
-        url: 'https://controlpanel.smsit.ai/apis/getcontacts/',
+        url: 'https://decontrolpanel.smsit.ai/apis/getcontacts/',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -84,7 +84,7 @@ exports.smsitGetContacts = async (apikey, number) => {
 exports.smsitSend = async (apikey, from, to, message) => {
     let options = {
         method: 'POST',
-        url: 'https://controlpanel.smsit.ai/apis/smscontact/',
+        url: 'https://decontrolpanel.smsit.ai/apis/smscontact/',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -107,7 +107,7 @@ exports.smsitSend = async (apikey, from, to, message) => {
 exports.smsitGetDeliveryStats = async (apikey, number) => {
     let options = {
         method: 'POST',
-        url: 'https://controlpanel.smsit.ai/apis/getcontactsmsdeliveryreport/',
+        url: 'https://decontrolpanel.smsit.ai/apis/getcontactsmsdeliveryreport/',
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },

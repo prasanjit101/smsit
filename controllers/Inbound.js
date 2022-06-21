@@ -12,7 +12,7 @@ const getContact = async (locationId, phoneNumber) => {
         const options = {
             method: 'GET',
             url: 'https://api.msgsndr.com/contacts/',
-            params: { locationId: locationId, limit: '40' },
+            params: { locationId: locationId, limit: '100' },
             headers: { 'Content-Type': 'application/json', Authorization: '', Version: process.env.API_VERSION }
         };
         if (process.env.OLDEST_CONTACT_ID) {
@@ -32,7 +32,7 @@ const smsitInbound = async (req, number, msg, recieverData) => {
         //get conversation fields
         const l = await DatastoreClient.FilterEquals('conversations', 'phone', number);
         const senderData = l.find(conversation => conversation.locationId === recieverData.locationId);//if the conversation belongs to the location iD
-        console.log("senderData: ", senderData);
+        console.log("senderData: ", senderData || "Senderdata not defined");
         //contact id present in db
         if (senderData) {
             //make inbound to ghl
