@@ -4,6 +4,12 @@ for direction on inbound messages : https://www.smsit.ai/api-gateway.html#Webhoo
 
 For direction on outbound messages: https://www.smsit.ai/api-cloud.html (Follows 1xxxxxxxxx format for number)
 
+## Pre-requisites
+
+- You need to have a Gohighlevel API key to run the application
+- A Gohighlevel application to use the application
+- And SMS-IT subscription
+
 ## USER GUIDE
 
 - add contact api of smsit requires group to be created beforehand, thus group with name 'ghl' is mandatory to get the app working
